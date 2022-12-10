@@ -1,31 +1,43 @@
 from flask import Flask, jsonify, request
+import json
 from backEnd.repository import *
+from backEnd.Models import models
 
 app=Flask(__name__)
 
-@app.route('/')
-def dato():
+@app.route('/consultarRoles')
+def consultarRoles():
     try:
-        datos = obtenerEstados()
+        datos = obtenerRoles()
         estados=[]
         for dato in datos:
             estado={'id': dato[0], 'descripcion': dato[1]}
             estados.append(estado)
-        return jsonify(estados)
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(estados, False)
+        return json.dumps(resp.__dict__)
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
-@app.route('/ConsultOneState/<id>', methods=['GET'])
-def obtenerUnEstado(id):
+@app.route('/Autenticacion', methods=['POST'])
+def autenticacion():
     try:
-        dato = obtenerUnEstados(id)
+        print(request.json)
+        dato = Autenticacion(request.json)
+        mensaje=''
         if(dato!=None):
-            estado={'id': dato[0], 'descripcion': dato[1]}
-            return jsonify(estado)
+            mensaje = {'mensaje': 'Ingreso exitoso', 'login':True}
         else:
-            return jsonify({'mensaje': ' estado no existe'})
+            mensaje={'mensaje': 'usuario y/o contraseña incorrecta', 'login':False}
+
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mensaje, False)
+        return json.dumps(resp.__dict__)
     except Exception as ex:
-        return jsonify({'mensaje' : 'Error'})
+        mensaje={'mensaje' : 'Error'}
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mensaje, True)
+        return json.dumps(resp.__dict__)
 
 @app.route('/ActualizarUsuario', methods=['POST'])
 def ActualizarUsuario():
@@ -35,11 +47,13 @@ def ActualizarUsuario():
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
-@app.route('/CrearUsuario', methods=['POST'])
-def CrearUsuario():
+@app.route('/RegistrarUsuario', methods=['POST'])
+def RegistrarUsuario():
     try:
         mensaje = CrearUsuarios(request.json)
-        return mensaje
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mensaje, False)
+        return json.dumps(resp.__dict__)
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
