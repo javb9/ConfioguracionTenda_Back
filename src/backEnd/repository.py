@@ -5,6 +5,8 @@ import pyodbc
 conexion = pyodbc.connect(
     'DRIVER={SQL Server};SERVER=JAVB2807;DATABASE=TG_DB;UID=sa;PWD=123')
 
+
+
 def Autenticacion(loginRequest):
     try:
         cursor = conexion.cursor()
@@ -42,7 +44,6 @@ def actualizarUsuarios(usuario):
         return jsonify({'mensaje': 'se actualizo usuario'})
     except Exception as exc:
         print(exc)
-
 
 def CrearUsuarios(usuario):
     try:

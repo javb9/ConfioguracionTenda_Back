@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 import json
 from backEnd.repository import *
 from backEnd.Models import models
+from backEnd.tenda.tendaConfig import TendaManager
 
 app=Flask(__name__)
 
@@ -57,6 +58,14 @@ def RegistrarUsuario():
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
+@app.route('/CambiarContrasennaRouter', methods=['POST'])
+def CambiarContrasennaRouter():
+    try:
+        resp=models.Responses()
+        resp.generaRespuestaGenerica({'mensaje':'se cambio de forma correcta'}, False)
+        return json.dumps(resp.__dict__)
+    except Exception as ex:
+        return jsonify({'mensaje' : 'Error'})
 
 if(__name__=='__main__'):
     app.run(debug=True)
