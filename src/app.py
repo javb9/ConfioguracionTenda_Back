@@ -27,7 +27,7 @@ def autenticacion():
         dato = Autenticacion(request.json)
         mensaje=''
         if(dato!=None):
-            mensaje = {'mensaje': 'Ingreso exitoso', 'login':True}
+            mensaje = {'mensaje': 'Ingreso exitoso', 'login':True, 'idUsuario': dato[0]}
         else:
             mensaje={'mensaje': 'usuario y/o contraseña incorrecta', 'login':False}
 
@@ -40,11 +40,13 @@ def autenticacion():
         resp.generaRespuestaGenerica(mensaje, True)
         return json.dumps(resp.__dict__)
 
-@app.route('/ActualizarUsuario', methods=['POST'])
-def ActualizarUsuario():
+@app.route('/EditarUsuario', methods=['POST'])
+def EditarUsuario():
     try:
         mensaje = actualizarUsuarios(request.json)
-        return mensaje
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mensaje, False)
+        return json.dumps(resp.__dict__)
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
@@ -63,6 +65,31 @@ def CambiarContrasennaRouter():
     try:
         resp=models.Responses()
         resp.generaRespuestaGenerica({'mensaje':'se cambio de forma correcta'}, False)
+        return json.dumps(resp.__dict__)
+    except Exception as ex:
+        return jsonify({'mensaje' : 'Error'})
+
+@app.route('/consultarTiposDoc')
+def consultarTiposDoc():
+    try:
+        datos = obtenerTiposDoc()
+        estados=[]
+        for dato in datos:
+            estado={'id': dato[0], 'descripcion': dato[1]}
+            estados.append(estado)
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(estados, False)
+        return json.dumps(resp.__dict__)
+    except Exception as ex:
+        return jsonify({'mensaje' : 'Error'})
+
+@app.route('/consultarUsuario/<id>')
+def consultarUsuario(id):
+    try:
+        datos = obtenerUsuario(id)
+        usuario = {"nombre": datos[1], "tipoDocumento": datos[2], "numeroDocumento": datos[3], "login": datos[4], "contraseña":datos[5], "correo":datos[6], "telefono":datos[7], "idRol": datos[8] }
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(usuario, False)
         return json.dumps(resp.__dict__)
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
