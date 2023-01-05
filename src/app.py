@@ -3,6 +3,11 @@ import json
 from backEnd.repository import *
 from backEnd.Models import models
 from backEnd.tenda.tendaConfig import TendaManager
+from backEnd.tenda.ip import obtenerPuertaEnlace
+
+puertaEnlace=obtenerPuertaEnlace()
+print(puertaEnlace)
+# manager = TendaManager(puertaEnlace, 'SiLcOm18')
 
 app=Flask(__name__)
 
@@ -60,15 +65,6 @@ def RegistrarUsuario():
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
-@app.route('/CambiarContrasennaRouter', methods=['POST'])
-def CambiarContrasennaRouter():
-    try:
-        resp=models.Responses()
-        resp.generaRespuestaGenerica({'mensaje':'se cambio de forma correcta'}, False)
-        return json.dumps(resp.__dict__)
-    except Exception as ex:
-        return jsonify({'mensaje' : 'Error'})
-
 @app.route('/consultarTiposDoc')
 def consultarTiposDoc():
     try:
@@ -90,6 +86,43 @@ def consultarUsuario(id):
         usuario = {"nombre": datos[1], "tipoDocumento": datos[2], "numeroDocumento": datos[3], "login": datos[4], "contraseña":datos[5], "correo":datos[6], "telefono":datos[7], "idRol": datos[8] }
         resp=models.Responses()
         resp.generaRespuestaGenerica(usuario, False)
+        return json.dumps(resp.__dict__)
+    except Exception as ex:
+        return jsonify({'mensaje' : 'Error'})
+
+@app.route('/EditRouterInfo', methods=['POST'])
+def actualizarContraseñaRouter():
+    try:
+        print(request.json)
+        # datos=request.json
+        # manager.set_wifi_settings(datos['contrasennaRed'], datos['nombreRed'])
+        mensaje = {'mensaje': 'se edito datos router'}
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mensaje, False)
+        return json.dumps(resp.__dict__)
+    except Exception as exc:
+        print(exc)
+
+@app.route('/consultarNotifiaciones')
+def consultarNotifiaciones():
+    try:
+        datos = obtenerNotificaciones()
+        notificaciones=[]
+        for dato in datos:
+            notifiacion={'id': dato[0], 'notificacion': dato[1], 'documento':dato[2]}
+            notificaciones.append(notifiacion)
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(notificaciones, False)
+        return json.dumps(resp.__dict__)
+    except Exception as ex:
+        return jsonify({'mensaje' : 'Error'})
+
+@app.route('/EliminarNotificacion/<id>')
+def EliminarNotificacion(id):
+    try:
+        mensaje = EliminarNot(id)
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mensaje, False)
         return json.dumps(resp.__dict__)
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})

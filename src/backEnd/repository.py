@@ -6,7 +6,6 @@ conexion = pyodbc.connect(
     'DRIVER={SQL Server};SERVER=JAVB2807;DATABASE=TG_DB;UID=sa;PWD=123')
 
 
-
 def Autenticacion(loginRequest):
     try:
         cursor = conexion.cursor()
@@ -46,7 +45,21 @@ def actualizarUsuarios(usuario):
                 AT01TELEFONO = '{4}'
                 WHERE AT01ID= {5}""".format(usuario['nombre'], usuario['tipoDocumento'], usuario['numeroDocumento'], usuario['correo'], usuario['telefono'], usuario['id']))
         conexion.commit()
+        crearNotificacion(usuario['numeroDocumento'], 'ACTUALIZAR')
         return {'mensaje': 'se edito usuario'}
+    except Exception as exc:
+        print(exc)
+
+def crearNotificacion(usuario, validacion):
+    try:
+        tipoNotificacion=''
+        if(validacion=='ACTUALIZAR'):
+            tipoNotificacion='cambio de datos de usuario'
+        else:
+            tipoNotificacion='se creo nuevo usuario'
+        cursor = conexion.cursor()
+        cursor.execute("""INSERT INTO T05_NOTIFICACIONES (AT05NOTIFICACION,AT05DOCUMENTO_USUARIO) VALUES('{0}', '{1}')""".format(tipoNotificacion, usuario))
+        conexion.commit()
     except Exception as exc:
         print(exc)
 
@@ -57,6 +70,7 @@ def CrearUsuarios(usuario):
             VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')""".format(usuario['nombre'], usuario['tipoDocumento'], usuario['numeroDocumento'],  usuario['login'], usuario['contraseña'], usuario['correo'], usuario['telefono'], usuario['idRol'], 1)
         cursor.execute(sql)
         conexion.commit()
+        crearNotificacion(usuario['numeroDocumento'], 'CREAR')
         return {'mensaje': 'se creo usuario'}
     except Exception as exc:
         print(exc)
@@ -80,3 +94,24 @@ def obtenerUsuario(id):
         return row
     except Exception as exc:
         print(exc)
+
+
+def obtenerNotificaciones():
+    try:
+        cursor = conexion.cursor()
+        cursor.execute("SELECT AT05ID, AT05NOTIFICACION, AT05DOCUMENTO_USUARIO FROM T05_NOTIFICACIONES ORDER BY AT05ID DESC")
+        row = cursor.fetchall()
+        return row
+    except Exception as exc:
+        print(exc)
+
+
+def EliminarNot(id):
+    try:
+        cursor = conexion.cursor()
+        cursor.execute("""DELETE T05_NOTIFICACIONES WHERE AT05ID={0}""".format(id))
+        conexion.commit()
+        return {'mensaje':'se elminio con exito la notificacion'}
+    except Exception as exc:
+        print(exc)
+

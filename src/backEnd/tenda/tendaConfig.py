@@ -197,7 +197,7 @@ class TendaManager(object):
             if err == '0':
                 return True
     
-    def set_wifi_settings(self, PWD):
+    def set_wifi_settings(self, PWD, SSID):
         print ("paso 1",( self.__SET_WIFI_SETTINGS_URL))
         request_headers = self.__bake_requests()
 
@@ -205,7 +205,7 @@ class TendaManager(object):
             'modules': 'wifiBasicCfg',
             'wifiEn': 'true',
             'module2': 'wifiBasicCfg',
-            #'wifiSSID': 'Tenda_BA9C00',
+            'wifiSSID': SSID,
             'wifiSecurityMode': 'wpa&wpa2',
             'wifiPwd': PWD,
         }
