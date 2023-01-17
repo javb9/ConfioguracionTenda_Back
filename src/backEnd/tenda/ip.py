@@ -1,7 +1,6 @@
 import subprocess
 
 def obtenerPuertaEnlace():
-    ip=("netsh interface ipv4 show address Wi-Fi")
     p = subprocess.run('netsh interface ipv4 show address Wi-Fi',
                     stdout=subprocess.PIPE,
                     shell = True,

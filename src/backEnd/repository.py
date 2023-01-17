@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 import pyodbc
 
 conexion = pyodbc.connect(
-    'DRIVER={SQL Server};SERVER=JAVB2807;DATABASE=TG_DB;UID=sa;PWD=123')
+    'DRIVER={SQL Server};SERVER=DESKTOP-C63I30V\MSSQLSERVER01;DATABASE=TG_DB;UID=sa;PWD=123')
 
 
 def Autenticacion(loginRequest):

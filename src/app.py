@@ -7,7 +7,7 @@ from backEnd.tenda.ip import obtenerPuertaEnlace
 
 puertaEnlace=obtenerPuertaEnlace()
 print(puertaEnlace)
-# manager = TendaManager(puertaEnlace, 'SiLcOm18')
+manager = TendaManager(puertaEnlace, 'admin')
 
 app=Flask(__name__)
 
@@ -93,9 +93,8 @@ def consultarUsuario(id):
 @app.route('/EditRouterInfo', methods=['POST'])
 def actualizarContraseñaRouter():
     try:
-        print(request.json)
-        # datos=request.json
-        # manager.set_wifi_settings(datos['contrasennaRed'], datos['nombreRed'])
+        datos=request.json
+        manager.set_wifi_settings(datos['contrasennaRed'], datos['nombreRed'])
         mensaje = {'mensaje': 'se edito datos router'}
         resp=models.Responses()
         resp.generaRespuestaGenerica(mensaje, False)
@@ -127,5 +126,18 @@ def EliminarNotificacion(id):
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
+@app.route('/ObtenerConectados')
+def Conectados():
+    try:
+        datos = manager.get_online_devices_with_stats()
+        dispositivos=[]
+        for dato in datos:
+            dispositivo={'mac':dato['qosListMac']}
+            dispositivos.append(dispositivo)
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(dispositivos, False)
+        return json.dumps(resp.__dict__)
+    except Exception as exc:
+        print(exc)
 if(__name__=='__main__'):
     app.run(debug=True)
