@@ -8,11 +8,8 @@ from getmac import *
 
 win_mac = get_mac_address(interface="Ethernet")
 won_mac = get_mac_address(interface="Wi-Fi")
-print (win_mac)
-print(won_mac)
-
 puertaEnlace=obtenerPuertaEnlace()
-# manager = TendaManager(puertaEnlace, 'admin')
+manager = TendaManager(puertaEnlace, 'admin')
 
 app=Flask(__name__)
 
