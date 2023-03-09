@@ -4,10 +4,15 @@ from backEnd.repository import *
 from backEnd.Models import models
 from backEnd.tenda.tendaConfig import TendaManager
 from backEnd.tenda.ip import obtenerPuertaEnlace
+from getmac import *
+
+win_mac = get_mac_address(interface="Ethernet")
+won_mac = get_mac_address(interface="Wi-Fi")
+print (win_mac)
+print(won_mac)
 
 puertaEnlace=obtenerPuertaEnlace()
-print(puertaEnlace)
-manager = TendaManager(puertaEnlace, 'admin')
+# manager = TendaManager(puertaEnlace, 'admin')
 
 app=Flask(__name__)
 
@@ -132,8 +137,10 @@ def Conectados():
         datos = manager.get_online_devices_with_stats()
         dispositivos=[]
         for dato in datos:
-            dispositivo={'mac':dato['qosListMac']}
-            dispositivos.append(dispositivo)
+            mac =dato['qosListMac']
+            if mac != win_mac & mac !=won_mac:
+                dispositivo={'mac':mac}
+                dispositivos.append(dispositivo)
         resp=models.Responses()
         resp.generaRespuestaGenerica(dispositivos, False)
         return json.dumps(resp.__dict__)

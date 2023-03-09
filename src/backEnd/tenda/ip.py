@@ -1,5 +1,4 @@
 import subprocess
-
 def obtenerPuertaEnlace():
     p = subprocess.run('netsh interface ipv4 show address Wi-Fi',
                     stdout=subprocess.PIPE,
@@ -9,6 +8,6 @@ def obtenerPuertaEnlace():
     out = p.stdout
     array = out.split()
     puetaEnlace=array[21]
-    prefijo=array[14].split('/')[1]
+    
     return puetaEnlace
     
