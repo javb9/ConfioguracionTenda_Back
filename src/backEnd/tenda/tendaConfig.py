@@ -197,19 +197,28 @@ class TendaManager(object):
             if err == '0':
                 return True
     
-    def set_wifi_settings(self, PWD, SSID):
+    def set_wifi_settings(self, PWD, SSID=''):
         print ("paso 1",( self.__SET_WIFI_SETTINGS_URL))
         request_headers = self.__bake_requests()
 
-        form_data = {
-            'modules': 'wifiBasicCfg',
-            'wifiEn': 'true',
-            'module2': 'wifiBasicCfg',
-            'wifiSSID': SSID,
-            'wifiSecurityMode': 'wpa&wpa2',
-            'wifiPwd': PWD,
-        }
-
+        if(SSID==''):
+            form_data = {
+                'modules': 'wifiBasicCfg',
+                'wifiEn': 'true',
+                'module2': 'wifiBasicCfg',
+                'wifiSecurityMode': 'wpa&wpa2',
+                'wifiPwd': PWD,
+            }
+        else:
+            form_data = {
+                'modules': 'wifiBasicCfg',
+                'wifiEn': 'true',
+                'module2': 'wifiBasicCfg',
+                'wifiSSID': SSID,
+                'wifiSecurityMode': 'wpa&wpa2',
+                'wifiPwd': PWD,
+            }
+            
         response = requests.post(
             self.__SET_WIFI_SETTINGS_URL, data=form_data, headers=request_headers, allow_redirects=False)
         print ("response: ", (response.text), (response.status_code))

@@ -98,6 +98,10 @@ def actualizarContraseñaRouter():
         datos=request.json
         manager.set_wifi_settings(datos['contrasennaRed'], datos['nombreRed'])
         mensaje = {'mensaje': 'se edito datos router'}
+        usuario = obtenerUsuario(datos['idUsuario'])
+        if(datos['nombreRed']==None):
+            nombreRed=''
+        crearNotificacion(usuario[3], 'ACTUALIZARROUTER',datos['contrasennaRed'],nombreRed )
         resp=models.Responses()
         resp.generaRespuestaGenerica(mensaje, False)
         return json.dumps(resp.__dict__)
@@ -132,16 +136,32 @@ def EliminarNotificacion(id):
 def Conectados():
     try:
         datos = manager.get_online_devices_with_stats()
+        
         dispositivos=[]
         for dato in datos:
-            mac =dato['qosListMac']
-            if mac != win_mac & mac !=won_mac:
-                dispositivo={'mac':mac}
-                dispositivos.append(dispositivo)
+            mac:str =dato['qosListMac']
+            if mac != str(win_mac):
+                if mac != str(won_mac):
+                    print(mac)
+                    dispositivo={'mac':mac}
+                    dispositivos.append(dispositivo)
         resp=models.Responses()
         resp.generaRespuestaGenerica(dispositivos, False)
+        print (resp)
         return json.dumps(resp.__dict__)
     except Exception as exc:
         print(exc)
+
+@app.route('/BlockDevice/<mac>')
+def BlockDevice(mac):
+    try:
+        datos = manager.block_device(mac)
+        mens = {"mensaje": "bloqueo correcto"}
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mens, False)
+        return json.dumps(resp.__dict__)
+    except Exception as ex:
+        return jsonify({'mensaje' : 'Error'})
+
 if(__name__=='__main__'):
     app.run(debug=True)

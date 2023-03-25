@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 import pyodbc
 
 conexion = pyodbc.connect(
-    'DRIVER={SQL Server};SERVER=JAVB2807;DATABASE=TG_DB;UID=sa;PWD=123')
+    'DRIVER={SQL Server};SERVER=DESKTOP-C63I30V\MSSQLSERVER01;DATABASE=TG_DB;UID=sa;PWD=123')
 
 
 def Autenticacion(loginRequest):
@@ -50,11 +50,16 @@ def actualizarUsuarios(usuario):
     except Exception as exc:
         print(exc)
 
-def crearNotificacion(usuario, validacion):
+def crearNotificacion(usuario, validacion, contrasena='', nombrered=''):
     try:
         tipoNotificacion=''
         if(validacion=='ACTUALIZAR'):
             tipoNotificacion='cambio de datos de usuario'
+        elif(validacion=='ACTUALIZARROUTER'):
+            if(nombrered==''):
+                tipoNotificacion='cambio de contraseña y/o nombre red router, contraseña: ' + contrasena
+            else:
+                tipoNotificacion='cambio de contraseña y/o nombre red router, contraseña: ' + contrasena +'- nombre red: '+ nombrered
         else:
             tipoNotificacion='se creo nuevo usuario'
         cursor = conexion.cursor()
