@@ -218,7 +218,6 @@ class TendaManager(object):
                 'wifiSecurityMode': 'wpa&wpa2',
                 'wifiPwd': PWD,
             }
-            
         response = requests.post(
             self.__SET_WIFI_SETTINGS_URL, data=form_data, headers=request_headers, allow_redirects=False)
         print ("response: ", (response.text), (response.status_code))

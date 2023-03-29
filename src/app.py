@@ -9,7 +9,6 @@ from getmac import *
 win_mac = get_mac_address(interface="Ethernet")
 won_mac = get_mac_address(interface="Wi-Fi")
 puertaEnlace=obtenerPuertaEnlace()
-manager = TendaManager(puertaEnlace, 'admin')
 
 app=Flask(__name__)
 
@@ -96,9 +95,11 @@ def consultarUsuario(id):
 def actualizarContraseñaRouter():
     try:
         datos=request.json
+        manager=TendaManager(puertaEnlace, 'admin')
         manager.set_wifi_settings(datos['contrasennaRed'], datos['nombreRed'])
         mensaje = {'mensaje': 'se edito datos router'}
         usuario = obtenerUsuario(datos['idUsuario'])
+        nombreRed=datos['nombreRed']
         if(datos['nombreRed']==None):
             nombreRed=''
         crearNotificacion(usuario[3], 'ACTUALIZARROUTER',datos['contrasennaRed'],nombreRed )
@@ -135,6 +136,7 @@ def EliminarNotificacion(id):
 @app.route('/ObtenerConectados')
 def Conectados():
     try:
+        manager=TendaManager(puertaEnlace, 'admin')
         datos = manager.get_online_devices_with_stats()
         
         dispositivos=[]
@@ -155,7 +157,8 @@ def Conectados():
 @app.route('/BlockDevice/<mac>')
 def BlockDevice(mac):
     try:
-        datos = manager.block_device(mac)
+        manager=TendaManager(puertaEnlace, 'admin')
+        manager.block_device(mac)
         mens = {"mensaje": "bloqueo correcto"}
         resp=models.Responses()
         resp.generaRespuestaGenerica(mens, False)
