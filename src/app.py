@@ -3,12 +3,12 @@ import json
 from backEnd.repository import *
 from backEnd.Models import models
 from backEnd.tenda.tendaConfig import TendaManager
-from backEnd.tenda.ip import obtenerPuertaEnlace
-from getmac import *
+# from backEnd.tenda.ip import obtenerPuertaEnlace
+# from getmac import *
 
-win_mac = get_mac_address(interface="Ethernet")
-won_mac = get_mac_address(interface="Wi-Fi")
-puertaEnlace=obtenerPuertaEnlace()
+# win_mac = get_mac_address(interface="Ethernet")
+# won_mac = get_mac_address(interface="Wi-Fi")
+# puertaEnlace=obtenerPuertaEnlace()
 
 app=Flask(__name__)
 
@@ -29,7 +29,6 @@ def consultarRoles():
 @app.route('/Autenticacion', methods=['POST'])
 def autenticacion():
     try:
-        print(request.json)
         dato = Autenticacion(request.json)
         mensaje=''
         if(dato!=None):
@@ -95,7 +94,7 @@ def consultarUsuario(id):
 def actualizarContraseñaRouter():
     try:
         datos=request.json
-        manager=TendaManager(puertaEnlace, 'admin')
+        manager=TendaManager(datos["puertaEnlace"], 'admin')
         manager.set_wifi_settings(datos['contrasennaRed'], datos['nombreRed'])
         mensaje = {'mensaje': 'se edito datos router'}
         usuario = obtenerUsuario(datos['idUsuario'])
@@ -133,8 +132,8 @@ def EliminarNotificacion(id):
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
-@app.route('/ObtenerConectados')
-def Conectados():
+@app.route('/ObtenerConectados/<puertaEnlace>')
+def Conectados(puertaEnlace):
     try:
         manager=TendaManager(puertaEnlace, 'admin')
         datos = manager.get_online_devices_with_stats()
@@ -142,11 +141,11 @@ def Conectados():
         dispositivos=[]
         for dato in datos:
             mac:str =dato['qosListMac']
-            if mac != str(win_mac):
-                if mac != str(won_mac):
-                    print(mac)
-                    dispositivo={'mac':mac}
-                    dispositivos.append(dispositivo)
+            # if mac != str(win_mac):
+            #     if mac != str(won_mac):
+            #         print(mac)
+            dispositivo={'mac':mac}
+            dispositivos.append(dispositivo)      
         resp=models.Responses()
         resp.generaRespuestaGenerica(dispositivos, False)
         print (resp)
@@ -154,11 +153,12 @@ def Conectados():
     except Exception as exc:
         print(exc)
 
-@app.route('/BlockDevice/<mac>')
-def BlockDevice(mac):
+@app.route('/BlockDevice', methods=['POST'])
+def BlockDevice():
     try:
-        manager=TendaManager(puertaEnlace, 'admin')
-        manager.block_device(mac)
+        datos =request.json
+        manager=TendaManager(datos["puertaEnlace"], 'admin')
+        manager.block_device(datos["mac"])
         mens = {"mensaje": "bloqueo correcto"}
         resp=models.Responses()
         resp.generaRespuestaGenerica(mens, False)
