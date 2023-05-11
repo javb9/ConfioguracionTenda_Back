@@ -3,12 +3,6 @@ import json
 from backEnd.repository import *
 from backEnd.Models import models
 from backEnd.tenda.tendaConfig import TendaManager
-# from backEnd.tenda.ip import obtenerPuertaEnlace
-# from getmac import *
-
-# win_mac = get_mac_address(interface="Ethernet")
-# won_mac = get_mac_address(interface="Wi-Fi")
-# puertaEnlace=obtenerPuertaEnlace()
 
 app=Flask(__name__)
 
