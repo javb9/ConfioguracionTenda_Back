@@ -5,6 +5,23 @@ import pyodbc
 conexion = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};SERVER=tgdb1.database.windows.net;DATABASE=TG_DB;UID=admintgdb;PWD=Diana1234.')
 
+def solicitudVisitaNotificacion(usuario):
+    try:
+        cursor = conexion.cursor()
+        cursor.execute("""INSERT INTO T05_NOTIFICACIONES (AT05NOTIFICACION,AT05DOCUMENTO_USUARIO) VALUES('{0}', '{1}')""".format('Solicitud visita tecnica', usuario))
+        conexion.commit()
+    except Exception as exc:
+        print(exc)
+
+def ValidarNumeroDoc(numDoc):
+    try:
+        cursor = conexion.cursor()
+        cursor.execute("""select * from T01_USERS 
+                    WHERE AT01NUMERO_DOCUMENTO = '{0}'""".format(numDoc))
+        row = cursor.fetchone()
+        return row
+    except Exception as exc:
+        print(exc)
 
 def Autenticacion(loginRequest):
     try:

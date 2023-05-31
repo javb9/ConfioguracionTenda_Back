@@ -20,6 +20,37 @@ def consultarRoles():
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
+@app.route('/solicitudVisita/<idUsuario>')
+def solicitudVisita(idUsuario):
+    try:
+        usuario = obtenerUsuario(idUsuario)
+        solicitudVisitaNotificacion(usuario[3])
+        resp=models.Responses()
+        resp.generaRespuestaGenerica({'mensaje': 'creacion notificacion correcta'}, False)
+        return json.dumps(resp.__dict__)
+    except Exception as ex:
+        return jsonify({'mensaje' : 'Error'})
+
+@app.route('/ValidarNumDoc/<numDoc>')
+def ValidarNumDoc(numDoc):
+    try:
+        dato = ValidarNumeroDoc(numDoc)
+        mensaje=''
+        if(dato==None):
+            mensaje = {'mensaje': 'no existe documento en bd', 'login':True, 'idUsuario': 0}
+        else:
+            mensaje={'mensaje': 'Ya existe docuemnto en bd', 'login':False}
+
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mensaje, False)
+        return json.dumps(resp.__dict__)
+    except Exception as ex:
+        mensaje={'mensaje' : 'Error'}
+        resp=models.Responses()
+        resp.generaRespuestaGenerica(mensaje, True)
+        return json.dumps(resp.__dict__)
+
+
 @app.route('/Autenticacion', methods=['POST'])
 def autenticacion():
     try:
