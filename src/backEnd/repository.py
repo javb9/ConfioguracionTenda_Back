@@ -5,7 +5,6 @@ import pyodbc
 conexion = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};SERVER=tgdb1.database.windows.net;DATABASE=TG_DB;UID=admintgdb;PWD=Diana1234.')
 
-
 def Autenticacion(loginRequest):
     try:
         cursor = conexion.cursor()
@@ -100,7 +99,6 @@ def obtenerUsuario(id):
     except Exception as exc:
         print(exc)
 
-
 def obtenerNotificaciones():
     try:
         cursor = conexion.cursor()
@@ -110,7 +108,6 @@ def obtenerNotificaciones():
     except Exception as exc:
         print(exc)
 
-
 def EliminarNot(id):
     try:
         cursor = conexion.cursor()
@@ -119,4 +116,3 @@ def EliminarNot(id):
         return {'mensaje':'se elminio con exito la notificacion'}
     except Exception as exc:
         print(exc)
-
