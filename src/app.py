@@ -120,6 +120,7 @@ def consultarUsuario(id):
 def actualizarContraseñaRouter():
     try:
         datos=request.json
+        print(datos)
         manager=TendaManager(datos["puertaEnlace"], 'admin')
         manager.set_wifi_settings(datos['contrasennaRed'], datos['nombreRed'])
         mensaje = {'mensaje': 'se edito datos router'}
