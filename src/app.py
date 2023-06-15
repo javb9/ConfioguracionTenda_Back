@@ -21,11 +21,12 @@ def consultarRoles():
     except Exception as ex:
         return jsonify({'mensaje' : 'Error'})
 
-@app.route('/solicitudVisita/<idUsuario>')
-def solicitudVisita(idUsuario):
+@app.route('/solicitudVisita', methods=['POST'])
+def solicitudVisita():
     try:
-        usuario = obtenerUsuario(idUsuario)
-        solicitudVisitaNotificacion(usuario[3])
+        dato = request.json
+        usuario = obtenerUsuario(dato["idUsuario"])
+        solicitudVisitaNotificacion(usuario[3], dato["observacion"])
         resp=models.Responses()
         resp.generaRespuestaGenerica({'mensaje': 'creacion notificacion correcta'}, False)
         return json.dumps(resp.__dict__)

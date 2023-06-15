@@ -3,12 +3,12 @@ from flask import Flask, jsonify, request
 import pyodbc
 
 conexion = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-C63I30V\MSSQLSERVER01;DATABASE=TG_DB;UID=sa;PWD=123')
+    'DRIVER={ODBC Driver 17 for SQL Server};SERVER=JAVB2807;DATABASE=TG_DB;UID=sa;PWD=123')
 
-def solicitudVisitaNotificacion(usuario):
+def solicitudVisitaNotificacion(usuario, observacion):
     try:
         cursor = conexion.cursor()
-        cursor.execute("""INSERT INTO T05_NOTIFICACIONES (AT05NOTIFICACION,AT05DOCUMENTO_USUARIO) VALUES('{0}', '{1}')""".format('Solicitud visita tecnica', usuario))
+        cursor.execute("""INSERT INTO T05_NOTIFICACIONES (AT05NOTIFICACION,AT05DOCUMENTO_USUARIO) VALUES('{0}', '{1}')""".format('Solicitud visita tecnica: ' + observacion, usuario))
         conexion.commit()
     except Exception as exc:
         print(exc)
